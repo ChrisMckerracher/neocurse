@@ -1,8 +1,38 @@
 # IDE Plan — PyCharm-Grade Workflow in This Config
 
-**Status:** DRAFT for discussion — decisions pending (§8)
-**Supersedes:** `plans.md` (stale simplification plan — kept for history, no longer maintained)
-**Related:** `pi-plan.md` (pi integration — shipped), `KEYBINDINGS.md` (updated as phases land)
+**Status:** ✅ IMPLEMENTED (2026-07-18) — via from-scratch rewrite (see below)
+**Supersedes:** `plans.md` (stale simplification plan)
+**Related:** `pi-plan.md` (pi integration — shipped), `KEYBINDINGS.md`
+
+---
+
+## DECISION: AstroNvim removed entirely
+
+The audit (§0) proved the distro was the *source* of the LSP duplication
+(community packs + astrolsp double-registration). Per the human's directive
+("rip it all out", "assume its all shit"), the config was rewritten from
+scratch: no distribution, ~20 owned lines per concern, 55 → 21 plugins
+(all extremely popular or first-party), native Neovim 0.11 LSP.
+
+**Verified post-rewrite client matrix:**
+
+| Language | Before | After |
+|----------|--------|-------|
+| Go | gopls ×2, null-ls | **gopls** |
+| Python | ruff, pyright ×2, basedpyright, ty, pyrefly, null-ls | **pyright, ruff** |
+| TypeScript | ts_ls ×2, vtsls, null-ls | **vtsls** |
+
+Refactor code actions verified live: gopls (Extract variable/function) ✓,
+vtsls (Move to new file, destructuring) ✓, Python → pyright rename + Ask pi.
+
+Open questions resolved: Q1 **pyright** (Microsoft = major company,
+boring-solid) · Q2 pylsp refactor-only **tried and dropped** (returns zero
+code actions — rope support is a separate `pylsp-rope` package mason doesn't
+ship; Python refactors go through pyright rename + pi) · Q3 **snacks.picker**
+(picker module only, everything else off) · Q4 **left** · Q5 virtual-text +
+eval hover + conditional breakpoint + mason-binary adapters · Q6 **yes**.
+
+The rest of this document is the original analysis, kept for reference.
 
 ---
 
@@ -134,19 +164,7 @@ PyCharm "index" ≈ LSP workspace symbols + ripgrep — no ctags needed.
 
 ## 8. Open questions
 
-- **Q1.** Python server: **basedpyright** (pack default, pyright superset,
-  active) — recommended — or keep **pyright** (your original pick)?
-- **Q2.** Python extract-function: add **pylsp + rope as a refactor-only
-  server** (diagnostics/hover/format disabled — code actions only), or skip
-  extract for Python? Recommended: try refactor-only; delete if it misbehaves.
-- **Q3.** Picker: **snacks.picker** (recommended — already installed,
-  AstroNvim v5-native) over telescope (new dependency)?
-- **Q4.** Structure view docked **left** (recommended — pi panel owns the
-  right edge as a float) or right?
-- **Q5.** Does "god tier" debugger mean anything beyond inline values + eval
-  hover + conditional breakpoints + working adapters? (watches UI? REPL?)
-- **Q6.** Commit the nvim config working tree now (recommended, split
-  commits), or keep floating?
+_(All resolved — see header.)
 
 ## 9. Phases
 

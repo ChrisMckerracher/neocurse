@@ -1,34 +1,29 @@
-# AstroNvim Template
+# nvim config
 
-**NOTE:** This is for AstroNvim v5+
+From-scratch Neovim config — no distribution. Go, Python, TypeScript.
 
-A template for getting started with [AstroNvim](https://github.com/AstroNvim/AstroNvim)
+- **Design & audit:** [ide-plan.md](ide-plan.md)
+- **Keybindings:** [KEYBINDINGS.md](KEYBINDINGS.md) (`Space ?` in editor)
+- **Agent integration:** [pi-plan.md](pi-plan.md) → repo at `~/Code/pi.nvim`
 
-## 🛠️ Installation
+## Layout
 
-#### Make a backup of your current nvim and shared folder
-
-```shell
-mv ~/.config/nvim ~/.config/nvim.bak
-mv ~/.local/share/nvim ~/.local/share/nvim.bak
-mv ~/.local/state/nvim ~/.local/state/nvim.bak
-mv ~/.cache/nvim ~/.cache/nvim.bak
+```
+init.lua            bootstrap + lazy setup
+lua/options.lua     editor options (small-screen first, scales to 1440p)
+lua/keymaps.lua     every keybinding + right-click refactor menu
+lua/autocmds.lua    autosave, autoreload, LSP attach wiring
+lua/lsp.lua         native 0.11 LSP — one strong server per language
+lua/plugins/        lazy specs: ui, editor, tools, dap, pi
 ```
 
-#### Create a new user repository from this template
+## LSP (verified, one job each)
 
-Press the "Use this template" button above to create a new repository to store your user configuration.
+| Language | Server(s) | Lint/format | Debug |
+|----------|-----------|-------------|-------|
+| Go | gopls | goimports (conform) | delve |
+| Python | pyright | ruff | debugpy |
+| TypeScript | vtsls | prettier | js-debug-adapter |
+| Lua (config) | lua_ls | stylua | — |
 
-You can also just clone this repository directly if you do not want to track your user configuration in GitHub.
-
-#### Clone the repository
-
-```shell
-git clone https://github.com/<your_user>/<your_repository> ~/.config/nvim
-```
-
-#### Start Neovim
-
-```shell
-nvim
-```
+Tools auto-install via mason on first launch.
