@@ -1,84 +1,99 @@
-if true then return {} end -- WARN: REMOVE THIS LINE TO ACTIVATE THIS FILE
-
--- AstroCore provides a central place to modify mappings, vim options, autocommands, and more!
--- Configuration documentation can be found with `:h astrocore`
--- NOTE: We highly recommend setting up the Lua Language Server (`:LspInstall lua_ls`)
---       as this provides autocomplete and documentation while editing
-
+-- Core config: options, keybindings, autocommands
 ---@type LazySpec
 return {
   "AstroNvim/astrocore",
   ---@type AstroCoreOpts
   opts = {
-    -- Configure core features of AstroNvim
-    features = {
-      large_buf = { size = 1024 * 256, lines = 10000 }, -- set global limits for large files for disabling features like treesitter
-      autopairs = true, -- enable autopairs at start
-      cmp = true, -- enable completion at start
-      diagnostics = { virtual_text = true, virtual_lines = false }, -- diagnostic settings on startup
-      highlighturl = true, -- highlight URLs at start
-      notifications = true, -- enable notifications at start
-    },
-    -- Diagnostics configuration (for vim.diagnostics.config({...})) when diagnostics are on
-    diagnostics = {
-      virtual_text = true,
-      underline = true,
-    },
-    -- passed to `vim.filetype.add`
-    filetypes = {
-      -- see `:h vim.filetype.add` for usage
-      extension = {
-        foo = "fooscript",
-      },
-      filename = {
-        [".foorc"] = "fooscript",
-      },
-      pattern = {
-        [".*/etc/foo/.*"] = "fooscript",
-      },
-    },
-    -- vim options can be configured here
     options = {
-      opt = { -- vim.opt.<key>
-        relativenumber = true, -- sets vim.opt.relativenumber
-        number = true, -- sets vim.opt.number
-        spell = false, -- sets vim.opt.spell
-        signcolumn = "yes", -- sets vim.opt.signcolumn to yes
-        wrap = false, -- sets vim.opt.wrap
-      },
-      g = { -- vim.g.<key>
-        -- configure global vim variables (vim.g)
-        -- NOTE: `mapleader` and `maplocalleader` must be set in the AstroNvim opts or before `lazy.setup`
-        -- This can be found in the `lua/lazy_setup.lua` file
+      opt = {
+        relativenumber = false,
+        number = true,
+        signcolumn = "yes",
+        wrap = true,
+        linebreak = true,
+        breakindent = true,
+
+        autowrite = true, -- auto-save on buffer switch, make, etc.
+        autoread = true, -- auto-reload files changed outside editor
       },
     },
-    -- Mappings can be configured through AstroCore as well.
-    -- NOTE: keycodes follow the casing in the vimdocs. For example, `<Leader>` must be capitalized
     mappings = {
-      -- first key is the mode
       n = {
-        -- second key is the lefthand side of the map
-
-        -- navigate buffer tabs
-        ["]b"] = { function() require("astrocore.buffer").nav(vim.v.count1) end, desc = "Next buffer" },
-        ["[b"] = { function() require("astrocore.buffer").nav(-vim.v.count1) end, desc = "Previous buffer" },
-
-        -- mappings seen under group name "Buffer"
-        ["<Leader>bd"] = {
-          function()
-            require("astroui.status.heirline").buffer_picker(
-              function(bufnr) require("astrocore.buffer").close(bufnr) end
-            )
-          end,
-          desc = "Close buffer from tabline",
+        -- Buffer navigation (visual "tabs")
+        ["<Tab>"] = { function() require("astrocore.buffer").nav(vim.v.count1) end, desc = "Next buffer" },
+        ["<S-Tab>"] = { function() require("astrocore.buffer").nav(-vim.v.count1) end, desc = "Previous buffer" },
+        ["<leader>c"] = {
+          function() require("mini.bufremove").delete(0, false) end,
+          desc = "Close buffer",
         },
 
-        -- tables with just a `desc` key will be registered with which-key if it's installed
-        -- this is useful for naming menus
-        -- ["<Leader>b"] = { desc = "Buffers" },
+        -- Debugging
+        ["<leader>b"] = { function() require("dap").toggle_breakpoint() end, desc = "Toggle breakpoint" },
+        ["<leader>r"] = { function() require("dap").continue() end, desc = "Start/continue debugging" },
+        ["<leader>n"] = { function() require("dap").step_over() end, desc = "Step over" },
+        ["<leader>i"] = { function() require("dap").step_into() end, desc = "Step into" },
+        ["<leader>o"] = { function() require("dap").step_out() end, desc = "Step out" },
+        ["<leader>d"] = { function() require("dapui").toggle() end, desc = "Toggle debug UI" },
 
-        -- setting a mapping to false will disable it
-        -- ["<C-S>"] = false,
+        -- Run file (no debugger)
+        ["<leader>R"] = { function()
+          local filetype = vim.bo.filetype
+          local filepath = vim.fn.expand "%:p"
+          if filetype == "python" then
+            vim.cmd(string.format("!python %s", filepath))
+          elseif filetype == "go" then
+            vim.cmd "!go run ."
+          elseif filetype == "typescript" or filetype == "javascript" then
+            vim.cmd(string.format("!node %s", filepath))
+          else
+            vim.notify("No run command for filetype: " .. filetype, vim.log.levels.WARN)
+          end
+        end, desc = "Run current file" },
+
+        -- Formatting
+        ["<leader>f"] = { function() vim.lsp.buf.format() end, desc = "Format current file" },
+
+        -- Keybindings cheatsheet
+        ["<leader>?"] = {
+          function() vim.cmd("edit " .. vim.fn.stdpath "config" .. "/KEYBINDINGS.md") end,
+          desc = "Open keybindings cheatsheet",
+        },
+      },
+    },
+    autocmds = {
+      auto_save = {
+        {
+          event = { "CursorHold", "FocusLost" },
+          callback = function()
+            if vim.bo.modified and vim.bo.buflisted then vim.cmd "silent! write" end
+          end,
+        },
+      },
+      fix_inlay_hints = {
+        {
+          event = { "TextChanged", "TextChangedI" },
+          callback = function()
+            pcall(function() vim.lsp.inlay_hint.enable(true, { bufnr = 0 }) end)
+          end,
+        },
+      },
+      auto_refresh = {
+        {
+          event = "CursorHold",
+          callback = function()
+            vim.cmd "checktime"
+          end,
+        },
+      },
+      auto_refresh_timer = {
+        {
+          event = "UIEnter",
+          callback = function()
+            vim.fn.timer_start(3000, function()
+              vim.cmd "silent! checktime"
+            end, { ["repeat"] = -1 })
+          end,
+        },
       },
     },
   },

@@ -1,15 +1,17 @@
-if true then return {} end -- WARN: REMOVE THIS LINE TO ACTIVATE THIS FILE
-
--- Customize Treesitter
-
+-- Treesitter parsers for syntax highlighting and code understanding
 ---@type LazySpec
 return {
   "nvim-treesitter/nvim-treesitter",
   opts = {
     ensure_installed = {
+      "go",
+      "python",
+      "typescript",
+      "tsx",
       "lua",
       "vim",
-      -- add more arguments for adding more treesitter parsers
+      "markdown",
+      "markdown_inline",
     },
   },
 }
