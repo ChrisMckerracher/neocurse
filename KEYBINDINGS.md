@@ -75,7 +75,7 @@ Mouse works everywhere; right-click opens a refactor menu.
 | `Space aj` / `Space ak` | Scroll chat (from any window) |
 | `Space ag` / `Space aG` | Chat top / bottom |
 
-Input box: `Enter` sends · `Ctrl-j` newline · `@file` (`Ctrl-x Ctrl-o` completes) · `Ctrl-d/u` scroll · `Esc` closes.
+Prompt box: `Enter` sends · `Ctrl-j` newline · `@file` (`Ctrl-x Ctrl-o` completes) · `Ctrl-d/u` scroll · `Esc` closes. The chat is a read-only viewer docked right like neo-tree — cursor may visit to scroll/copy, `q` closes, typing bounces to the prompt.
 
 ## Other
 | Key | Action |
