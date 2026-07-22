@@ -63,7 +63,14 @@ return {
     lazy = false,
     ---@type snacks.Config
     opts = {
-      picker = { enabled = true },
+      picker = {
+        enabled = true,
+        win = {
+          input = { border = "single" },
+          list = { border = "single" },
+          preview = { border = "single" },
+        },
+      },
     },
   },
 }

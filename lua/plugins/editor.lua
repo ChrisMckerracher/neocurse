@@ -21,9 +21,7 @@ return {
       },
       highlight = { enable = true },
     },
-    config = function(_, opts)
-      require("nvim-treesitter.configs").setup(opts)
-    end,
+    config = function(_, opts) require("nvim-treesitter.configs").setup(opts) end,
   },
 
   {
@@ -37,10 +35,10 @@ return {
       },
       appearance = { nerd_font_variant = "mono" },
       completion = {
-        documentation = { auto_show = true, auto_show_delay_ms = 200 },
-        menu = { draw = { columns = { { "label", "label_description", gap = 1 }, { "kind" } } } },
+        documentation = { auto_show = true, auto_show_delay_ms = 200, window = { border = "single" } },
+        menu = { border = "single", draw = { columns = { { "label", "label_description", gap = 1 }, { "kind" } } } },
       },
-      signature = { enabled = true },
+      signature = { enabled = true, window = { border = "single" } },
       sources = { default = { "lsp", "path", "buffer" } },
     },
   },
@@ -69,9 +67,7 @@ return {
   {
     "RRethy/vim-illuminate",
     opts = { delay = 200, large_file_cutoff = 2000 },
-    config = function(_, opts)
-      require("illuminate").configure(opts)
-    end,
+    config = function(_, opts) require("illuminate").configure(opts) end,
   },
 
   { "echasnovski/mini.bufremove", opts = {} },

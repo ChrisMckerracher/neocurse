@@ -96,7 +96,13 @@ return {
         executable = { command = mason_bin .. "js-debug-adapter", args = { "${port}" } },
       }
       dap.configurations.typescript = {
-        { type = "pwa-node", request = "launch", name = "Launch file", program = "${file}", cwd = "${workspaceFolder}" },
+        {
+          type = "pwa-node",
+          request = "launch",
+          name = "Launch file",
+          program = "${file}",
+          cwd = "${workspaceFolder}",
+        },
         {
           type = "pwa-node",
           request = "launch",

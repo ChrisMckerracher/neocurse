@@ -40,11 +40,13 @@ opt.updatetime = 250
 opt.mouse = "a"
 opt.mousemodel = "popup"
 
--- UI: globalstatus saves a row on small screens
+-- UI: globalstatus saves a row on small screens; cmdline hidden until used.
+-- (No global winborder — it breaks statusline rendering; floats set their
+-- own sharp "single" borders instead.)
 opt.termguicolors = true
 opt.laststatus = 3
+opt.cmdheight = 0
 opt.showmode = false
-opt.cmdheight = 1
 opt.fillchars = { eob = " " }
 opt.shortmess:append "c"
 

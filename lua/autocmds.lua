@@ -6,6 +6,9 @@ local function au(event, opts)
   vim.api.nvim_create_autocmd(event, opts)
 end
 
+-- Sharp float borders everywhere, consistent with the panel style
+vim.diagnostic.config { float = { border = "single" } }
+
 -- Save on idle / focus loss
 au({ "CursorHold", "FocusLost" }, {
   callback = function()
@@ -15,23 +18,17 @@ au({ "CursorHold", "FocusLost" }, {
 
 -- Reload files changed outside the editor
 au({ "CursorHold", "FocusGained", "BufEnter" }, {
-  callback = function()
-    vim.cmd "checktime"
-  end,
+  callback = function() vim.cmd "checktime" end,
 })
 au("VimEnter", {
   callback = function()
-    vim.fn.timer_start(3000, function()
-      vim.cmd "silent! checktime"
-    end, { ["repeat"] = -1 })
+    vim.fn.timer_start(3000, function() vim.cmd "silent! checktime" end, { ["repeat"] = -1 })
   end,
 })
 
 -- Flash yanked text
 au("TextYankPost", {
-  callback = function()
-    vim.hl.on_yank { timeout = 150 }
-  end,
+  callback = function() vim.hl.on_yank { timeout = 150 } end,
 })
 
 -- neo-tree auto-opens only when there's room for it (external monitor).
@@ -50,16 +47,14 @@ au("LspAttach", {
   callback = function(args)
     local bufnr = args.buf
     local client = vim.lsp.get_client_by_id(args.data.client_id)
-    local function map(lhs, fn, desc, mode)
-      vim.keymap.set(mode or "n", lhs, fn, { buffer = bufnr, desc = desc })
-    end
+    local function map(lhs, fn, desc, mode) vim.keymap.set(mode or "n", lhs, fn, { buffer = bufnr, desc = desc }) end
 
     map("gd", vim.lsp.buf.definition, "Go to definition")
     map("gD", vim.lsp.buf.declaration, "Go to declaration")
     map("gi", vim.lsp.buf.implementation, "Go to implementation")
     map("gy", vim.lsp.buf.type_definition, "Go to type definition")
     map("gr", vim.lsp.buf.references, "References")
-    map("K", vim.lsp.buf.hover, "Hover documentation")
+    map("K", function() vim.lsp.buf.hover { border = "single" } end, "Hover documentation")
     map("<leader>lr", vim.lsp.buf.rename, "Rename symbol")
     map("<leader>la", vim.lsp.buf.code_action, "Code action")
     map("<C-k>", vim.lsp.buf.signature_help, "Signature help", "i")
@@ -67,8 +62,10 @@ au("LspAttach", {
     if client and client.server_capabilities.inlayHintProvider then
       vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
     end
-    map("<leader>lh", function()
-      vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = bufnr }, { bufnr = bufnr })
-    end, "Toggle inlay hints")
+    map(
+      "<leader>lh",
+      function() vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = bufnr }, { bufnr = bufnr }) end,
+      "Toggle inlay hints"
+    )
   end,
 })

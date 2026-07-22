@@ -14,7 +14,9 @@ Mouse works everywhere; right-click opens a refactor menu.
 | Key | Action |
 |---|---|
 | `Ctrl-h/j/k/l` | Move between windows |
-| `Ctrl-arrows` | Resize windows |
+| `Ctrl-Left` | Move divider left (pi panel open: **grow** the panel) |
+| `Ctrl-Right` | Move divider right (pi panel open: **shrink** the panel) |
+| `Ctrl-Up` / `Ctrl-Down` | Resize height (pi panel open: grow input / shrink to its starting height) |
 
 ## Files & Search
 | Key | Action |
@@ -62,7 +64,8 @@ Mouse works everywhere; right-click opens a refactor menu.
 ## Pi (AI agent)
 | Key | Action |
 |---|---|
-| `Space a` | Toggle pi panel |
+| `Space a` | Open pi panel / switch focus (text ↔ chat) |
+| `Space aq` | Close pi panel (also `Esc` in the prompt box) |
 | `Space as` (visual) / `Space af` | Send selection / file |
 | `Space ak` (visual) | Inline edit |
 | `Space ad` / `Space aD` | Review / reject agent changes |

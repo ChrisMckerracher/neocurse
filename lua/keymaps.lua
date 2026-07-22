@@ -8,15 +8,41 @@ map({ "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { expr = true })
 
 map("n", "<Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear search highlight" })
 
--- Window navigation / resize
+-- Window navigation / resize. Arrows move the divider visually: when the
+-- pi panel is open, <C-Left> grows it and <C-Right> shrinks it (editor
+-- and panel are siblings); otherwise the flip logic keeps arrows honest.
 map("n", "<C-h>", "<C-w>h", { desc = "Window left" })
 map("n", "<C-j>", "<C-w>j", { desc = "Window down" })
 map("n", "<C-k>", "<C-w>k", { desc = "Window up" })
 map("n", "<C-l>", "<C-w>l", { desc = "Window right" })
-map("n", "<C-Up>", "<cmd>resize +2<CR>", { desc = "Window taller" })
-map("n", "<C-Down>", "<cmd>resize -2<CR>", { desc = "Window shorter" })
-map("n", "<C-Left>", "<cmd>vertical resize -4<CR>", { desc = "Window narrower" })
-map("n", "<C-Right>", "<cmd>vertical resize +4<CR>", { desc = "Window wider" })
+
+local function resize_vertical(dir)
+  if vim.fn.winnr "h" == vim.fn.winnr() and vim.fn.winnr "l" == vim.fn.winnr() then return end -- no vertical split
+  local ok, panel = pcall(require, "pi_nvim.panel")
+  if ok and panel.is_open() then
+    panel.resize(-dir * 4) -- <C-Left> (dir=-1) grows panel, <C-Right> shrinks
+    return
+  end
+  local amount = dir * 4
+  if vim.fn.winnr "l" == vim.fn.winnr() then amount = -amount end -- rightmost: flip
+  -- pcall: shrinking an already-small window throws E36 (not enough room)
+  pcall(vim.cmd, ("vertical resize %s%d"):format(amount > 0 and "+" or "", amount))
+end
+local function resize_horizontal(dir)
+  local ok, panel = pcall(require, "pi_nvim.panel")
+  if ok and panel.is_open() then
+    panel.resize_height(dir) -- <C-Up> grows input, <C-Down> shrinks toward its floor
+    return
+  end
+  if vim.fn.winnr "j" == vim.fn.winnr() and vim.fn.winnr "k" == vim.fn.winnr() then return end -- no horizontal split
+  local amount = dir * 2
+  if vim.fn.winnr "j" == vim.fn.winnr() then amount = -amount end -- bottommost: flip
+  pcall(vim.cmd, ("resize %s%d"):format(amount > 0 and "+" or "", amount))
+end
+map("n", "<C-Left>", function() resize_vertical(-1) end, { desc = "Divider left (pi: grow panel)" })
+map("n", "<C-Right>", function() resize_vertical(1) end, { desc = "Divider right (pi: shrink panel)" })
+map("n", "<C-Up>", function() resize_horizontal(1) end, { desc = "Divider up" })
+map("n", "<C-Down>", function() resize_horizontal(-1) end, { desc = "Divider down" })
 
 -- Buffers ("tabs")
 map("n", "<Tab>", "<cmd>bnext<CR>", { desc = "Next buffer" })
@@ -48,7 +74,12 @@ map("n", "<leader>R", function()
 end, { desc = "Run current file" })
 
 -- Format (conform; LSP fallback)
-map({ "n", "v" }, "<leader>f", function() require("conform").format { async = true, lsp_format = "fallback" } end, { desc = "Format" })
+map(
+  { "n", "v" },
+  "<leader>f",
+  function() require("conform").format { async = true, lsp_format = "fallback" } end,
+  { desc = "Format" }
+)
 
 -- Diagnostics
 map("n", "<leader>ld", vim.diagnostic.open_float, { desc = "Line diagnostics" })
@@ -68,7 +99,12 @@ map("n", "<leader>f?", function() Snacks.picker.resume() end, { desc = "Resume p
 map("n", "<leader>v", "<cmd>AerialToggle left<CR>", { desc = "Structure view" })
 
 -- Cheatsheet
-map("n", "<leader>?", "<cmd>edit " .. vim.fn.stdpath "config" .. "/KEYBINDINGS.md<CR>", { desc = "Keybindings cheatsheet" })
+map(
+  "n",
+  "<leader>?",
+  "<cmd>edit " .. vim.fn.stdpath "config" .. "/KEYBINDINGS.md<CR>",
+  { desc = "Keybindings cheatsheet" }
+)
 
 -- Ctrl+click → go to definition (PyCharm-style)
 map("n", "<C-LeftMouse>", function()
