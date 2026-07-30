@@ -92,7 +92,7 @@ Every sidebar answers ONE key with identical 3-state semantics:
 | `Space am` / `Space at` | Pick model / cycle thinking |
 | `Space ax` | Abort agent |
 
-Prompt box: `Enter` sends (stays in insert) · `Ctrl-j` newline · `@file` (`Ctrl-x Ctrl-o` completes) · `PageUp`/`PageDown` scrolls the chat · `Esc` back to editor · `q` closes.
+Prompt box: always insert mode (a text field, not a vim buffer) — `Enter` sends · `Ctrl-j` newline · `@file` (`Ctrl-x Ctrl-o` completes) · `PageUp`/`PageDown` scrolls the chat · `Esc` back to editor (re-entering drops you back in insert) · `q` (normal) closes.
 Chat viewer: read-only — scroll/copy freely, `Esc` back to editor, `q` closes, `i`/`a`/`o`/`Enter` bounces to the prompt.
 
 ## Other
