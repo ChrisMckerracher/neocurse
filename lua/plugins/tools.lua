@@ -63,6 +63,8 @@ return {
     lazy = false,
     ---@type snacks.Config
     opts = {
+      -- picker: search/indexing. input: floating vim.ui.input replacement —
+      -- required because cmdheight=0 hides the default cmdline dialog.
       picker = {
         enabled = true,
         win = {
@@ -71,6 +73,7 @@ return {
           preview = { border = "single" },
         },
       },
+      input = { enabled = true },
     },
   },
 }

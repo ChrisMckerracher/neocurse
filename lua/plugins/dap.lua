@@ -36,7 +36,11 @@ return {
       { "<leader>b", function() require("dap").toggle_breakpoint() end, desc = "Toggle breakpoint" },
       {
         "<leader>B",
-        function() require("dap").set_breakpoint(vim.fn.input "Condition: ") end,
+        function()
+          vim.ui.input({ prompt = "Condition: " }, function(cond)
+            if cond then require("dap").set_breakpoint(cond) end
+          end)
+        end,
         desc = "Conditional breakpoint",
       },
       { "<leader>r", function() require("dap").continue() end, desc = "Start/continue debugging" },
