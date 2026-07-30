@@ -56,7 +56,32 @@ for i = 1, 9 do
 end
 
 -- Files
-map("n", "<leader>e", "<cmd>Neotree toggle<CR>", { desc = "File explorer" })
+-- Unified sidebar contract (same 3-state semantics as the pi panel):
+--   surface closed        → Space x opens + focuses it
+--   surface open, outside → Space x jumps focus to it
+--   surface open, inside  → Space x closes it
+local function win_by_ft(ft)
+  for _, w in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+    if vim.bo[vim.api.nvim_win_get_buf(w)].filetype == ft then return w end
+  end
+end
+
+local function sidebar_toggle(ft, open_cmd, focus_cmd)
+  return function()
+    local win = win_by_ft(ft)
+    if not win then
+      vim.cmd(open_cmd)
+      return
+    end
+    if vim.api.nvim_get_current_win() == win then
+      vim.api.nvim_win_close(win, true)
+    else
+      vim.cmd(focus_cmd)
+    end
+  end
+end
+
+map("n", "<leader>e", sidebar_toggle("neo-tree", "Neotree focus", "Neotree focus"), { desc = "File tree" })
 
 -- Run current file
 map("n", "<leader>R", function()
@@ -95,8 +120,8 @@ map("n", "<leader>fr", function() Snacks.picker.lsp_references() end, { desc = "
 map("n", "<leader>fd", function() Snacks.picker.diagnostics() end, { desc = "Diagnostics" })
 map("n", "<leader>f?", function() Snacks.picker.resume() end, { desc = "Resume picker" })
 
--- Structure view
-map("n", "<leader>v", "<cmd>AerialToggle left<CR>", { desc = "Structure view" })
+-- Structure view (same 3-state sidebar contract)
+map("n", "<leader>v", sidebar_toggle("aerial", "AerialOpen", "AerialFocus"), { desc = "Structure view" })
 
 -- Cheatsheet
 map(

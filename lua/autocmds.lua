@@ -42,6 +42,18 @@ au("VimEnter", {
   end,
 })
 
+-- Sidebar contract in tree-like plugins: Esc returns to the previous
+-- window (editor), q closes the surface (neo-tree maps q natively).
+au("FileType", {
+  pattern = { "neo-tree", "aerial" },
+  callback = function(args)
+    vim.keymap.set("n", "<Esc>", "<C-w>p", { buffer = args.buf, desc = "Back to editor" })
+    if args.match == "aerial" then
+      vim.keymap.set("n", "q", "<cmd>AerialClose<CR>", { buffer = args.buf, desc = "Close structure" })
+    end
+  end,
+})
+
 -- LSP: buffer-local keybinds + inlay hints on attach
 au("LspAttach", {
   callback = function(args)

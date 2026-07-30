@@ -3,6 +3,29 @@
 **Leader key = Space.** From-scratch config — no distribution defaults.
 Mouse works everywhere; right-click opens a refactor menu.
 
+## The sidebar contract (same everywhere)
+
+Every sidebar answers ONE key with identical 3-state semantics:
+
+| State you're in | `Space e` / `Space a` / `Space v` does |
+|---|---|
+| Surface **closed** | opens it **and focuses it** |
+| Surface **open**, you're elsewhere | jumps focus to it |
+| Surface **open**, you're inside it | closes it |
+
+| Surface | Key |
+|---|---|
+| File tree (neo-tree) | `Space e` |
+| AI sidebar (pi) | `Space a` |
+| Structure (aerial) | `Space v` |
+| Debugger (dap-ui) | `Space d` |
+
+| Universal keys | Action |
+|---|---|
+| `Ctrl-h/j/k/l` | Hop between ANY windows (editor, tree, chat, prompt…) |
+| `Esc` (in a sidebar) | Back to editor — sidebar stays open |
+| `q` (in a sidebar) | Close that surface |
+
 ## Buffers ("tabs")
 | Key | Action |
 |---|---|
@@ -13,15 +36,13 @@ Mouse works everywhere; right-click opens a refactor menu.
 ## Windows
 | Key | Action |
 |---|---|
-| `Ctrl-h/j/k/l` | Move between windows |
 | `Ctrl-Left` | Move divider left (pi panel open: **grow** the panel) |
 | `Ctrl-Right` | Move divider right (pi panel open: **shrink** the panel) |
-| `Ctrl-Up` / `Ctrl-Down` | Resize height (pi panel open: grow input / shrink to its starting height) |
+| `Ctrl-Up` / `Ctrl-Down` | Resize height (pi panel open: grow prompt / shrink to its starting height) |
 
 ## Files & Search
 | Key | Action |
 |---|---|
-| `Space e` | File explorer (neo-tree; `l` open, `h` collapse) |
 | `Space ff` | Find files |
 | `Space fw` | Grep (live) |
 | `Space fb` | Find buffer |
@@ -29,7 +50,6 @@ Mouse works everywhere; right-click opens a refactor menu.
 | `Space fr` | References |
 | `Space fd` | Diagnostics |
 | `Space f?` | Resume last picker |
-| `Space v` | Structure view (aerial) |
 
 ## LSP (active in code buffers)
 | Key | Action |
@@ -49,7 +69,7 @@ Mouse works everywhere; right-click opens a refactor menu.
 |---|---|
 | Right-click | Menu: Rename · Refactor… · Code Action · Definition · References · Format · Ask pi |
 | Ctrl+click | Go to definition |
-| Wheel over pi chat | Scroll chat |
+| Wheel | Scroll whatever's under the pointer (native, no special keys) |
 
 ## Debugging
 | Key | Action |
@@ -64,18 +84,16 @@ Mouse works everywhere; right-click opens a refactor menu.
 ## Pi (AI agent)
 | Key | Action |
 |---|---|
-| `Space a` | Open pi panel / switch focus (text ↔ chat) |
-| `Space aq` | Close pi panel (also `Esc` in the prompt box) |
+| `Space a` | Pi panel (contract: open / focus / close) |
 | `Space as` (visual) / `Space af` | Send selection / file |
 | `Space ak` (visual) | Inline edit |
 | `Space ad` / `Space aD` | Review / reject agent changes |
 | `Space an` / `Space ar` | New / resume session (CLI too) |
 | `Space am` / `Space at` | Pick model / cycle thinking |
 | `Space ax` | Abort agent |
-| `Space aj` / `Space ak` | Scroll chat (from any window) |
-| `Space ag` / `Space aG` | Chat top / bottom |
 
-Prompt box: `Enter` sends · `Ctrl-j` newline · `@file` (`Ctrl-x Ctrl-o` completes) · `Ctrl-d/u` scroll · `Esc` closes. The chat is a read-only viewer docked right like neo-tree — cursor may visit to scroll/copy, `q` closes, typing bounces to the prompt.
+Prompt box: `Enter` sends (stays in insert) · `Ctrl-j` newline · `@file` (`Ctrl-x Ctrl-o` completes) · `Ctrl-d/u` scrolls the chat · `Esc` back to editor · `q` closes.
+Chat viewer: read-only — scroll/copy freely, `Esc` back to editor, `q` closes, `i`/`a`/`o`/`Enter` bounces to the prompt.
 
 ## Other
 | Key | Action |
