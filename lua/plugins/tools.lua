@@ -45,7 +45,7 @@ return {
       window = {
         -- Fraction of screen with clamps: Pocket Reform → 1440p both work.
         width = math.max(20, math.min(34, math.floor(vim.o.columns * 0.18))),
-        mappings = { ["l"] = "open", ["h"] = "close_node", ["<space>"] = "none" },
+        mappings = { ["l"] = "open", ["h"] = "close_node", ["<space>"] = "none", ["q"] = "close_window" },
       },
       filesystem = {
         use_libuv_file_watcher = true, -- agent-created files appear live

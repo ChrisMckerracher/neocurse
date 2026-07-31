@@ -25,6 +25,8 @@ Every sidebar answers ONE key with identical 3-state semantics:
 | `Ctrl-h/j/k/l` | Hop between ANY windows (editor, tree, chat, prompt…) |
 | `Esc` (in a sidebar) | Back to editor — sidebar stays open |
 | `q` (in a sidebar) | Close that surface |
+| `Space q` | **Close ALL sidebars at once** (also wipes the tree from the tabline) |
+| `Alt-e/a/v/d/q` (in the prompt) | The same sidebar keys from inside the always-insert prompt — leader chords would type text there |
 
 ## Buffers ("tabs")
 | Key | Action |
