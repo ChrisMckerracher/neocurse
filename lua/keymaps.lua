@@ -112,6 +112,11 @@ map(
   "<cmd>edit " .. vim.fn.stdpath "config" .. "/KEYBINDINGS.md<CR>",
   { desc = "Keybindings cheatsheet" }
 )
+vim.api.nvim_create_user_command(
+  "Keymaps",
+  "edit " .. vim.fn.stdpath "config" .. "/KEYBINDINGS.md",
+  { desc = "Keybindings cheatsheet" }
+)
 
 -- Ctrl+click → go to definition (PyCharm-style)
 map("n", "<C-LeftMouse>", function()

@@ -101,5 +101,7 @@ Chat viewer: read-only — scroll/copy freely, `Esc` back to editor, `q` closes,
 | Key | Action |
 |---|---|
 | `Space R` | Run current file |
-| `Space ?` | This cheatsheet |
+| `Space ?` or `:Keymaps` | This cheatsheet |
 | `gcc` | Toggle comment (built-in) |
+| `j` / `k` | Move by **display line** when wrapped (by line with a count) |
+| `Esc` (editor) | Clear search highlight |
