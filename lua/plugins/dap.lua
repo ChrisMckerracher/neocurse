@@ -66,7 +66,7 @@ return {
       local function python_path()
         local venv = os.getenv "VIRTUAL_ENV"
         if venv then return venv .. "/bin/python" end
-        return "python"
+        return "python3" -- this machine has python3 but no `python` alias
       end
       dap.configurations.python = {
         { type = "python", request = "launch", name = "Launch file", program = "${file}", pythonPath = python_path },
