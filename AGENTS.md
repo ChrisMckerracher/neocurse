@@ -1,5 +1,6 @@
 # Authorship
 - 2026-08-01 05:45 — agent: pi (k3) (initial agent context for session continuity)
+- 2026-08-03 01:15 — agent: pi (k3) (mason-venv/python-upgrade breakage convention after debugger repair)
 
 # nvim config — Agent Instructions
 
@@ -36,3 +37,9 @@ lua/plugins/        lazy specs: ui, editor, tools, dap, pi
 - LSP client matrix is verified: Go=gopls, Python=pyright+ruff, TS=vtsls.
   Do not add servers without checking `vim.lsp.get_clients()` per language.
 - Environment: `python3` exists, `python` does not.
+- Mason python venvs break silently on system python upgrades (the venv's
+  `bin/python` symlinks `/usr/bin/python3`, but site-packages is
+  versioned). Symptom: adapter exits 1 with `No module named '<pkg>'`.
+  Repair in place: `uv venv <pkg>/venv --system-site-packages &&
+  uv pip install --python <pkg>/venv/bin/python <pkg>` (debugpy rebuilt
+  this way 2026-08-03 → 1.8.21).
