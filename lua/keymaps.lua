@@ -1,6 +1,7 @@
 -- All keybindings in one place. LSP buffer-local maps live in autocmds.lua
 -- (LspAttach). Cheat sheet: KEYBINDINGS.md (kept in sync).
 local map = vim.keymap.set
+local sidebar = require "sidebar"
 
 -- Move by display line when lines wrap (small screens), by line with a count
 map({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { expr = true })
@@ -15,6 +16,19 @@ map("n", "<C-h>", "<C-w>h", { desc = "Window left" })
 map("n", "<C-j>", "<C-w>j", { desc = "Window down" })
 map("n", "<C-k>", "<C-w>k", { desc = "Window up" })
 map("n", "<C-l>", "<C-w>l", { desc = "Window right" })
+
+-- Space w is a discoverable companion to native Ctrl-w navigation.
+for _, direction in ipairs { "h", "j", "k", "l", "w" } do
+  map(
+    "n",
+    "<leader>w" .. direction,
+    "<C-w>" .. direction,
+    { desc = "Window " .. ({ h = "left", j = "down", k = "up", l = "right", w = "next" })[direction] }
+  )
+end
+map("n", "<leader>we", sidebar.focus_editor, { desc = "Focus editor" })
+map("n", "<leader>wt", "<cmd>Neotree focus<CR>", { desc = "Focus file tree" })
+map("n", "<leader>wp", function() require("pi_nvim.panel").open() end, { desc = "Focus pi prompt" })
 
 local function resize_vertical(dir)
   if vim.fn.winnr "h" == vim.fn.winnr() and vim.fn.winnr "l" == vim.fn.winnr() then return end -- no vertical split
@@ -45,11 +59,12 @@ map("n", "<C-Up>", function() resize_horizontal(1) end, { desc = "Divider up" })
 map("n", "<C-Down>", function() resize_horizontal(-1) end, { desc = "Divider down" })
 
 -- Buffers ("tabs")
-map("n", "<Tab>", "<cmd>bnext<CR>", { desc = "Next buffer" })
-map("n", "<S-Tab>", "<cmd>bprevious<CR>", { desc = "Previous buffer" })
+map("n", "<Tab>", sidebar.in_editor(function() vim.cmd "bnext" end), { desc = "Next buffer" })
+map("n", "<S-Tab>", sidebar.in_editor(function() vim.cmd "bprevious" end), { desc = "Previous buffer" })
 map("n", "<leader>c", function() require("mini.bufremove").delete(0, false) end, { desc = "Close buffer" })
 for i = 1, 9 do
   map("n", "<leader>" .. i, function()
+    sidebar.focus_editor()
     local bufs = vim.fn.getbufinfo { buflisted = 1 }
     if bufs[i] then vim.cmd.buffer(bufs[i].bufnr) end
   end, { desc = "Go to buffer " .. i })
@@ -58,8 +73,6 @@ end
 -- Files
 -- Unified sidebar contract lives in lua/sidebar.lua (one 3-state key per
 -- surface): closed → open+focus · outside → focus · inside → close.
-local sidebar = require "sidebar"
-
 map("n", "<leader>e", sidebar.toggle("neo-tree", "Neotree focus", "Neotree focus"), { desc = "File tree" })
 
 -- Close every sidebar at once (tree, structure, pi panel, debug UI)
@@ -93,30 +106,42 @@ map("n", "<leader>ld", vim.diagnostic.open_float, { desc = "Line diagnostics" })
 map("n", "<leader>lq", vim.diagnostic.setloclist, { desc = "Diagnostics to loclist" })
 
 -- Search (snacks.picker)
-map("n", "<leader>ff", function() Snacks.picker.files() end, { desc = "Find files" })
-map("n", "<leader>fw", function() Snacks.picker.grep() end, { desc = "Grep (live)" })
-map("n", "<leader>fb", function() Snacks.picker.buffers() end, { desc = "Find buffer" })
-map("n", "<leader>fs", function() Snacks.picker.lsp_symbols() end, { desc = "Document symbols" })
-map("n", "<leader>fS", function() Snacks.picker.lsp_workspace_symbols() end, { desc = "Workspace symbols" })
-map("n", "<leader>fr", function() Snacks.picker.lsp_references() end, { desc = "References" })
-map("n", "<leader>fd", function() Snacks.picker.diagnostics() end, { desc = "Diagnostics" })
-map("n", "<leader>f?", function() Snacks.picker.resume() end, { desc = "Resume picker" })
+map("n", "<leader>ff", sidebar.in_editor(function() Snacks.picker.files() end), { desc = "Find files" })
+map("n", "<leader>fw", sidebar.in_editor(function() Snacks.picker.grep() end), { desc = "Grep (live)" })
+map("n", "<leader>fb", sidebar.in_editor(function() Snacks.picker.buffers() end), { desc = "Find buffer" })
+map("n", "<leader>fs", sidebar.in_editor(function() Snacks.picker.lsp_symbols() end), { desc = "Document symbols" })
+map(
+  "n",
+  "<leader>fS",
+  sidebar.in_editor(function() Snacks.picker.lsp_workspace_symbols() end),
+  { desc = "Workspace symbols" }
+)
+map("n", "<leader>fr", sidebar.in_editor(function() Snacks.picker.lsp_references() end), { desc = "References" })
+map("n", "<leader>fd", sidebar.in_editor(function() Snacks.picker.diagnostics() end), { desc = "Diagnostics" })
+map("n", "<leader>f?", sidebar.in_editor(function() Snacks.picker.resume() end), { desc = "Resume picker" })
 
 -- Structure view (same 3-state sidebar contract)
 map("n", "<leader>v", sidebar.toggle("aerial", "AerialOpen", "AerialFocus"), { desc = "Structure view" })
 
--- Cheatsheet
-map(
-  "n",
-  "<leader>?",
-  "<cmd>edit " .. vim.fn.stdpath "config" .. "/KEYBINDINGS.md<CR>",
-  { desc = "Keybindings cheatsheet" }
-)
-vim.api.nvim_create_user_command(
-  "Keymaps",
-  "edit " .. vim.fn.stdpath "config" .. "/KEYBINDINGS.md",
-  { desc = "Keybindings cheatsheet" }
-)
+-- Search live shortcuts, including mappings attached to the current buffer.
+local function keybindings()
+  Snacks.picker.keymaps {
+    title = "Keybindings · Space is leader",
+    layout = { preset = "select", preview = false, layout = { border = "single" } },
+    format = function(item)
+      return {
+        { string.format(" %-2s ", item.mode), "SnacksPickerSpecial" },
+        { string.format("%-24s", Snacks.util.normkey(item.key)), "SnacksPickerLabel" },
+        { item.item.desc or item.item.rhs or "Custom mapping", "SnacksPickerDesc" },
+      }
+    end,
+    -- This is a reference picker: mappings span several modes, so executing
+    -- a selected insert/visual mapping from normal mode would be misleading.
+    confirm = function(picker) picker:close() end,
+  }
+end
+map("n", "<leader>?", keybindings, { desc = "Search keybindings" })
+vim.api.nvim_create_user_command("Keymaps", keybindings, { desc = "Search keybindings" })
 
 -- Ctrl+click → go to definition (PyCharm-style)
 map("n", "<C-LeftMouse>", function()

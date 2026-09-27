@@ -3,6 +3,27 @@
 **Leader key = Space.** From-scratch config — no distribution defaults.
 Mouse works everywhere; right-click opens a refactor menu.
 
+Use `Space ?` or `:Keymaps` to open the floating keybinding picker.
+Type a key or description to filter; each row shows its mode and shortcut.
+It includes global and current-buffer mappings. `Alt-g` / `Alt-b` toggle those
+sources; `Esc` closes the picker. Selecting a row closes it without running
+the shortcut. This file remains the guide to workflows and built-in motions.
+
+## Moving between windows
+
+In normal mode (press `Esc` first while typing), `Space w h/j/k/l` moves
+left/down/up/right. `Space w w` cycles windows. `Ctrl-h/j/k/l` and native
+`Ctrl-w h/j/k/l` also work. Pi keeps focus when you press Escape.
+
+| Destination | Key |
+|---|---|
+| Editor buffer | `Space w e` |
+| File tree | `Space w t` |
+| Pi prompt | `Space w p` |
+
+The file tree opens files in an editor window. File pickers, buffer cycling, and
+numbered buffer shortcuts also target the editor, preserving Pi's draft and chat.
+
 ## Sidebar controls
 
 File tree and structure view use these focus-aware controls:
@@ -23,12 +44,12 @@ File tree and structure view use these focus-aware controls:
 | Universal keys | Action |
 |---|---|
 | `Ctrl-h/j/k/l` | Hop between ANY windows (editor, tree, chat, prompt…) |
-| `Esc` (in a sidebar) | Back to editor — sidebar stays open |
+| `Esc` (Pi) | Leave insert/visual mode; keep focus in Pi |
 | `q` (in a sidebar) | Close that surface |
 | `Space q` | **Close ALL sidebars at once** (also wipes the tree from the tabline) |
 
-From the Pi prompt, press `Esc` to return to the editor, then use the normal
-Space shortcuts. `Space a` closes an open Pi panel regardless of focus.
+From the Pi prompt, press `Esc` for normal mode, then use the normal
+Space shortcuts. Use `Ctrl-w h` to return to the editor. `Space a` closes an open Pi panel regardless of focus.
 
 ## Buffers ("tabs")
 | Key | Action |
@@ -92,18 +113,21 @@ Space shortcuts. `Space a` closes an open Pi panel regardless of focus.
 | `Space as` (visual) / `Space af` | Send selection / file |
 | `Space ak` (visual) | Inline edit |
 | `Space ad` / `Space aD` | Review / reject agent changes |
+| `F2` (inside Pi) / `Space aS` / `:PiSessions` | Session menu: new or resume |
 | `Space an` / `Space ar` | New / resume session (CLI too) |
 | `Space am` / `Space at` | Pick model / cycle thinking |
-| `Space ax` | Abort agent |
+| `Ctrl-c` (inside Pi, insert or normal) / `Space ax` | Stop the running response; keep draft |
 
-Prompt box: always insert mode (a text field, not a vim buffer) — `Enter` sends · `Ctrl-j` newline · `@file` (`Ctrl-x Ctrl-o` completes) · `PageUp`/`PageDown` scrolls the chat · `Esc` back to editor (re-entering drops you back in insert) · `q` (normal) closes.
-Chat viewer: read-only — scroll/copy freely, `Esc` back to editor, `q` closes, `i`/`a`/`o`/`Enter` bounces to the prompt.
+The prompt bar always shows **Ctrl-C stop · F2 sessions**, including while Pi is working.
+
+Prompt box: starts in insert mode; `Esc` enters normal mode in place and `i` resumes typing — `Enter` sends · `Ctrl-j` newline · `@file` (`Ctrl-x Ctrl-o` completes) · `PageUp`/`PageDown` scrolls the chat · `Ctrl-w h` returns to the editor · `q` (normal) closes.
+Chat viewer: read-only — scroll/copy freely, `Esc` keeps focus, `q` closes, `i`/`a`/`o`/`Enter` bounces to the prompt.
 
 ## Other
 | Key | Action |
 |---|---|
 | `Space R` | Run current file |
-| `Space ?` or `:Keymaps` | This cheatsheet |
+| `Space ?` or `:Keymaps` | Search live keybindings |
 | `gcc` | Toggle comment (built-in) |
 | `j` / `k` | Move by **display line** when wrapped (by line with a count) |
 | `Esc` (editor) | Clear search highlight |

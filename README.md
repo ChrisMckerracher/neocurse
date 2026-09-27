@@ -47,8 +47,8 @@ TypeScript host — needs node), and mason installs the toolchain. Verify with:
 
 ## Using it
 
-**Leader is `Space`.** Full cheatsheet: [KEYBINDINGS.md](KEYBINDINGS.md)
-(`Space ?` in the editor). The essentials:
+**Leader is `Space`.** Navigate with `Space w h/j/k/l`; jump to the editor/tree/Pi with `Space w e/t/p`. In Pi, `Ctrl-C` stops a response and `F2` opens sessions. Full cheatsheet: [KEYBINDINGS.md](KEYBINDINGS.md)
+(search live shortcuts with `Space ?` or `:Keymaps`). The essentials:
 
 | Key | Action |
 |-----|--------|
@@ -92,7 +92,7 @@ lua/sidebar.lua     unified 3-state sidebar contract helpers
 lua/autocmds.lua    autosave, autoreload, LSP attach, filetype seams
 lua/lsp.lua         native 0.11 LSP — one strong server per language
 lua/plugins/        lazy specs: ui, editor, tools, dap, pi
-KEYBINDINGS.md      the cheatsheet (Space ?)
+KEYBINDINGS.md      the workflow cheatsheet
 AGENTS.md           agent instructions incl. the self-configuration protocol
 ```
 

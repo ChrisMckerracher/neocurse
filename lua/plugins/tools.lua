@@ -41,6 +41,20 @@ return {
     dependencies = { "nvim-lua/plenary.nvim", "MunifTanjim/nui.nvim", "nvim-tree/nvim-web-devicons" },
     opts = {
       close_if_last_window = true,
+      -- Files belong in editor windows, never Pi, trees, or debugger surfaces.
+      open_files_do_not_replace_types = {
+        "terminal",
+        "Trouble",
+        "qf",
+        "edgy",
+        "nofile",
+        "prompt",
+        "help",
+        "quickfix",
+        "pi_prompt",
+        "pi_chat",
+        "aerial",
+      },
       popup_border_style = "rounded",
       window = {
         -- Fraction of screen with clamps: Pocket Reform → 1440p both work.

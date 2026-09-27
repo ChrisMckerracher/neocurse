@@ -44,6 +44,41 @@ function M.toggle(ft, open_cmd, focus_cmd)
   end
 end
 
+--- Focus a normal editor window before opening a file or switching buffers.
+function M.focus_editor()
+  local function usable(win)
+    return vim.api.nvim_win_get_config(win).relative == ""
+      and vim.bo[vim.api.nvim_win_get_buf(win)].buftype == ""
+      and not vim.wo[win].winfixbuf
+  end
+  local current = vim.api.nvim_get_current_win()
+  if usable(current) then return end
+  local alternate = vim.fn.win_getid(vim.fn.winnr "#")
+  if alternate ~= 0 and usable(alternate) then
+    vim.api.nvim_set_current_win(alternate)
+    return
+  end
+  for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+    if usable(win) then
+      vim.api.nvim_set_current_win(win)
+      return
+    end
+  end
+  vim.cmd "topleft vsplit"
+  vim.wo.winfixbuf = false
+  vim.cmd "enew"
+end
+
+--- Run editor-only navigation without replacing a sidebar's buffer.
+---@param action fun()
+---@return fun()
+function M.in_editor(action)
+  return function()
+    M.focus_editor()
+    action()
+  end
+end
+
 --- Close every sidebar surface at once (Space q).
 function M.close_all()
   for _, ft in ipairs { "neo-tree", "aerial" } do
