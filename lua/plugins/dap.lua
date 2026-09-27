@@ -48,7 +48,7 @@ return {
       { "<leader>i", function() require("dap").step_into() end, desc = "Step into" },
       { "<leader>o", function() require("dap").step_out() end, desc = "Step out" },
       { "<leader>d", function() require("dapui").toggle() end, desc = "Toggle debug UI" },
-      { "<leader>ev", function() require("dapui").eval() end, mode = { "n", "v" }, desc = "Eval under cursor" },
+      { "<leader>E", function() require("dapui").eval() end, mode = { "n", "v" }, desc = "Eval under cursor" },
     },
     config = function()
       local dap = require "dap"

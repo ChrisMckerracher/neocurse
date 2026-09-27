@@ -4,6 +4,7 @@ return {
     "nvim-treesitter/nvim-treesitter",
     branch = "master", -- classic configs API; the `main` rewrite removed it
     build = ":TSUpdate",
+    init = function() require("treesitter_compat").setup() end,
     opts = {
       ensure_installed = {
         "go",

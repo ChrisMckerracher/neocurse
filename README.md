@@ -48,18 +48,21 @@ TypeScript host — needs node), and mason installs the toolchain. Verify with:
 ## Using it
 
 **Leader is `Space`.** Navigate with `Space w h/j/k/l`; jump to the editor/tree/Pi with `Space w e/t/p`. In Pi, `Ctrl-C` stops a response and `F2` opens sessions. Full cheatsheet: [KEYBINDINGS.md](KEYBINDINGS.md)
-(search live shortcuts with `Space ?` or `:Keymaps`). The essentials:
+(search shortcuts for the current window with `Space ?` or `:Keymaps`). The essentials:
 
 | Key | Action |
 |-----|--------|
 | `Space a` | AI agent panel (chat with pi) |
-| `Space ak` | Inline edit selection with pi |
+| `Space pk` | Inline edit selection with pi |
 | `Space e` / `Space v` | File tree / symbol structure |
 | `Space d` | Debugger UI |
-| `Space f` / `Space s` | Find files / symbols (snacks/picker) |
+| `Space lf` | Format buffer or selection |
+| `Space E` | Evaluate expression in debugger |
+| `Space ff` / `Space fs` | Find files / document symbols |
 
-In the panel: type, `Enter` sends, `@path` attaches files, `Space ad`
-reviews agent edits in a native diff, `Space aD` reverts them.
+Pi actions use `Space p…`, keeping `Space a` an immediate toggle.
+In the panel: type, `Enter` sends, `@path` attaches files, `Space pd`
+reviews agent edits in a native diff, `Space pD` reverts them.
 
 ## Configuring it
 
@@ -88,7 +91,9 @@ install.sh          one-command installer (backup-aware)
 init.lua            lazy.nvim bootstrap + setup
 lua/options.lua     editor options (small-screen first, scales to 1440p)
 lua/keymaps.lua     config keybindings + right-click refactor menu
-lua/keymap_policy.lua focused keybinding reference + disabled window operations
+lua/keymap_policy.lua allowed shortcuts + disabled window operations
+lua/keybinding_view.lua context-aware reference + preferred LSP aliases
+lua/treesitter_compat.lua classic plugin capture adapter for Neovim 0.12
 lua/sidebar.lua     unified 3-state sidebar contract helpers
 lua/autocmds.lua    autosave, autoreload, LSP attach, filetype seams
 lua/lsp.lua         native 0.11 LSP — one strong server per language
@@ -102,3 +107,20 @@ AGENTS.md           agent instructions incl. the self-configuration protocol
 This config replaced an AstroNvim distribution (audit in
 [ide-plan.md](ide-plan.md)) and evolved alongside pi.nvim, which was built
 *for* it. The commit history is the real record.
+
+## Local verification
+
+From the config directory, run these without downloading tools or parsers:
+
+```sh
+nvim --headless -u NONE -l tests/shortcuts.lua
+nvim --headless -u NONE -l tests/editor_routing.lua
+nvim --headless -u NONE -l tests/keymap_policy.lua
+nvim --headless -u NONE -l tests/keybinding_view.lua
+nvim --headless -u NONE -l tests/treesitter_compat.lua
+```
+
+The pinned classic Treesitter plugin uses the older single-node capture API.
+On Neovim 0.12, `treesitter_compat.lua` adapts only that plugin's legacy query
+registrations. Syntax highlighting and embedded-language parsing stay enabled;
+Neovim's query registration functions are restored immediately after loading.

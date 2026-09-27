@@ -7,6 +7,6 @@ return {
     main = "pi_nvim",
     lazy = false, -- small Lua surface; host process spawns lazily on first use
     build = "npm ci --prefix host && npm run build --prefix host",
-    opts = {},
+    opts = { keymaps = false }, -- config owns the delay-free Space a / Space p layout
   },
 }

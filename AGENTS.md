@@ -23,7 +23,10 @@ repo is at https://github.com/ChrisMckerracher/pi.nvim (local checkout
 ```
 init.lua            bootstrap + lazy setup
 lua/options.lua     editor options (small-screen first, scales to 1440p)
-lua/keymaps.lua     every keybinding + right-click refactor menu
+lua/keymaps.lua     config keybindings + right-click refactor menu
+lua/keybinding_view.lua contextual shortcut reference
+lua/keymap_policy.lua allowed shortcuts + blocked window operations
+lua/treesitter_compat.lua Neovim 0.12 capture compatibility
 lua/sidebar.lua     unified 3-state sidebar contract helpers
 lua/autocmds.lua    autosave, autoreload, LSP attach, filetype seams
 lua/lsp.lua         native 0.11 LSP — one strong server per language
@@ -48,7 +51,7 @@ The embedded pi agent (this repo's own user) configures neocurse on request
    `lua/autocmds.lua`; pi panel opts → `lua/plugins/pi.lua`.
 2. **Follow the invariants** — sidebar 3-state contract (`lua/sidebar.lua`);
    one strong LSP server per language, verified via `vim.lsp.get_clients()`
-   before adding; leader is Space, pi lives under `Space a`.
+   before adding; leader is Space, `Space a` toggles Pi, and Pi actions use `Space p…`.
 3. **Verify before claiming done** — headless boot must exit clean:
    `nvim --headless "+lua vim.defer_fn(function() vim.cmd'quitall' end, 2000)"`
    (the defer lets lazy/mason settle; check `:checkhealth` output when relevant).
@@ -82,3 +85,16 @@ window rotation, exchange/rearrangement, detachment, or maximization shortcuts.
 `lua/keymap_policy.lua` owns the disabled native window bindings and the focused
 keybinding-picker policy; `lua/keymaps.lua` owns config mappings. Preserve normal
 Vim editing and plugin controls when pruning the picker.
+
+Keep leader mappings prefix-free within each mode: `Space a` toggles Pi,
+`Space p…` contains Pi actions, `Space e` toggles the tree, `Space E` evaluates
+debug expressions, and `Space lf` formats. References use `grr`; do not restore
+the ambiguous `gr` alias. `keybinding_view.lua` filters using the originating
+buffer and shows one preferred binding per LSP action without deleting native
+aliases. Keep README and KEYBINDINGS aligned with these mappings.
+
+Neovim 0.12 passes node lists to Treesitter predicates/directives. The pinned
+classic plugin expects scalar captures with `all=false`; load the scoped
+`treesitter_compat` adapter before that plugin registers its handlers. Verify
+fenced-language injections, not just startup. Never hide compatibility errors
+by globally disabling highlighting.

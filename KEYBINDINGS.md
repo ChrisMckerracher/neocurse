@@ -3,12 +3,16 @@
 **Leader key = Space.** From-scratch config — no distribution defaults.
 Mouse works everywhere; right-click opens a refactor menu.
 
-Use `Space ?` or `:Keymaps` to open the floating keybinding picker.
-Type a key or description to filter; each row shows its mode and shortcut.
-It shows supported config/plugin shortcuts and common editing/navigation mappings,
-including the current buffer’s file-tree, Pi, debugger, or LSP controls. `Alt-g` / `Alt-b` toggle those
-sources; `Esc` closes the picker. Selecting a row closes it without running
-the shortcut. This file remains the guide to workflows and built-in motions.
+Use `Space ?` or `:Keymaps` for shortcuts relevant to the current window.
+The title identifies Editor, Pi, File tree, Debugger, or Structure. Common
+navigation stays visible everywhere; editor/LSP actions appear in code buffers,
+Pi actions in Pi, and local plugin controls in their own windows. LSP help appears
+when a server is attached. Duplicate LSP aliases collapse to the preferred key,
+and buffer-local overrides take precedence. Type to search; `Esc` closes the
+reference without executing anything.
+
+`Space a` (Pi) and `Space e` (tree) are immediate toggles: longer commands do not
+share those prefixes. Pi actions use `Space p…`; format uses `Space lf`.
 
 ## Moving between windows
 
@@ -44,9 +48,10 @@ File tree and structure view use these focus-aware controls:
 
 | Universal keys | Action |
 |---|---|
-| `Ctrl-h/j/k/l` | Hop between ANY windows (editor, tree, chat, prompt…) |
+| `Ctrl-h/j/k/l` (normal mode) | Move between editor, tree, chat, and prompt |
 | `Esc` (Pi) | Leave insert/visual mode; keep focus in Pi |
-| `q` (in a sidebar) | Close that surface |
+| `Esc` (tree, structure) | Return to previous window |
+| `q` (Pi, tree, structure; normal mode) | Close that surface |
 | `Space q` | **Close ALL sidebars at once** (also wipes the tree from the tabline) |
 
 From the Pi prompt, press `Esc` for normal mode, then use the normal
@@ -73,7 +78,6 @@ Space shortcuts. Use `Ctrl-w h` to return to the editor. `Space a` closes an ope
 | `Space fw` | Grep (live) |
 | `Space fb` | Find buffer |
 | `Space fs` / `Space fS` | Document / workspace symbols |
-| `Space fr` | References |
 | `Space fd` | Diagnostics |
 | `Space f?` | Resume last picker |
 
@@ -82,13 +86,13 @@ Space shortcuts. Use `Ctrl-w h` to return to the editor. `Space a` closes an ope
 |---|---|
 | `gd` / `gD` | Definition / declaration |
 | `gi` / `gy` | Implementation / type definition |
-| `gr` | References |
+| `grr` | References |
 | `K` | Hover docs · `Ctrl-k` (insert) signature |
 | `Space lr` | Rename symbol (across files) |
 | `Space la` | Code action |
 | `Space lh` | Toggle inlay hints |
 | `Space ld` / `Space lq` | Line diagnostics / diagnostics list |
-| `Space f` | Format (prettier/ruff/goimports/stylua) |
+| `Space lf` | Format (prettier/ruff/goimports/stylua) |
 
 ## Mouse
 | Gesture | Action |
@@ -105,19 +109,19 @@ Space shortcuts. Use `Ctrl-w h` to return to the editor. `Space a` closes an ope
 | `Space r` | Start / continue |
 | `Space n` / `Space i` / `Space o` | Step over / into / out |
 | `Space d` | Toggle debug UI |
-| `Space ev` | Eval expression under cursor |
+| `Space E` | Eval expression under cursor |
 
 ## Pi (AI agent)
 | Key | Action |
 |---|---|
 | `Space a` | Toggle Pi panel (open / close regardless of focus) |
-| `Space as` (visual) / `Space af` | Send selection / file |
-| `Space ak` (visual) | Inline edit |
-| `Space ad` / `Space aD` | Review / reject agent changes |
-| `F2` (inside Pi) / `Space aS` / `:PiSessions` | Session menu: new or resume |
-| `Space an` / `Space ar` | New / resume session (CLI too) |
-| `Space am` / `Space at` | Pick model / cycle thinking |
-| `Ctrl-c` (inside Pi, insert or normal) / `Space ax` | Stop the running response; keep draft |
+| `Space ps` (visual) / `Space pf` | Send selection / file |
+| `Space pk` (visual) | Inline edit |
+| `Space pd` / `Space pD` | Review / reject agent changes |
+| `F2` (inside Pi) / `Space pS` / `:PiSessions` | Session menu: new or resume |
+| `Space pn` / `Space pr` | New / resume session (CLI too) |
+| `Space pm` / `Space pt` | Pick model / cycle thinking |
+| `Ctrl-c` (inside Pi, insert or normal) / `Space px` | Stop the running response; keep draft |
 
 The prompt bar always shows **Ctrl-C stop · F2 sessions**, including while Pi is working.
 

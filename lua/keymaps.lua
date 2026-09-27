@@ -63,7 +63,12 @@ map("n", "<C-Down>", function() resize_horizontal(-1) end, { desc = "Divider dow
 -- Buffers ("tabs")
 map("n", "<Tab>", sidebar.in_editor(function() vim.cmd "bnext" end), { desc = "Next buffer" })
 map("n", "<S-Tab>", sidebar.in_editor(function() vim.cmd "bprevious" end), { desc = "Previous buffer" })
-map("n", "<leader>c", function() require("mini.bufremove").delete(0, false) end, { desc = "Close buffer" })
+map(
+  "n",
+  "<leader>c",
+  sidebar.in_editor(function() require("mini.bufremove").delete(0, false) end),
+  { desc = "Close buffer" }
+)
 for i = 1, 9 do
   map("n", "<leader>" .. i, function()
     sidebar.focus_editor()
@@ -83,7 +88,7 @@ map("n", "<leader>q", sidebar.close_all, { desc = "Close all sidebars" })
 -- Format (conform; LSP fallback)
 map(
   { "n", "v" },
-  "<leader>f",
+  "<leader>lf",
   function() require("conform").format { async = true, lsp_format = "fallback" } end,
   { desc = "Format" }
 )
@@ -110,30 +115,30 @@ map("n", "<leader>f?", sidebar.in_editor(function() Snacks.picker.resume() end),
 -- Structure view (same 3-state sidebar contract)
 map("n", "<leader>v", sidebar.toggle("aerial", "AerialOpen", "AerialFocus"), { desc = "Structure view" })
 
--- Search live shortcuts, including mappings attached to the current buffer.
-local function keybindings()
-  Snacks.picker.keymaps {
-    title = "Keybindings · Space is leader",
-    transform = function(item)
-      if not keymap_policy.visible(item) then return false end
-      item.text = table.concat({ Snacks.util.normkey(item.key), item.mode, keymap_policy.description(item) }, " ")
-    end,
-    layout = { preset = "select", preview = false, layout = { border = "single" } },
-    format = function(item)
-      return {
-        { string.format(" %-2s ", item.mode), "SnacksPickerSpecial" },
-        { string.format("%-24s", Snacks.util.normkey(item.key)), "SnacksPickerLabel" },
-        { keymap_policy.description(item), "SnacksPickerDesc" },
-      }
-    end,
-    -- Search user-facing descriptions and keys, not hidden Lua implementation paths.
-    -- This is a reference picker: mappings span several modes, so executing
-    -- a selected insert/visual mapping from normal mode would be misleading.
-    confirm = function(picker) picker:close() end,
-  }
+-- Pi actions have their own prefix so Space a remains an immediate toggle.
+local function pi_action(name)
+  return function() require("pi_nvim")[name]() end
 end
-map("n", "<leader>?", keybindings, { desc = "Search keybindings" })
-vim.api.nvim_create_user_command("Keymaps", keybindings, { desc = "Search keybindings" })
+map("n", "<leader>a", pi_action "toggle", { desc = "Toggle pi panel" })
+for _, action in ipairs {
+  { "n", "pf", "send_file", "Send current file to pi" },
+  { "x", "ps", "send_selection", "Send selection to pi" },
+  { "x", "pk", "inline_edit", "Inline edit with pi" },
+  { "n", "pd", "review_changes", "Review pi changes" },
+  { "n", "pD", "reject_change", "Reject pi changes" },
+  { "n", "pS", "session_menu", "Pi sessions: new or resume" },
+  { "n", "pn", "new_session", "New pi session" },
+  { "n", "pr", "resume_session", "Resume pi session" },
+  { "n", "pm", "pick_model", "Pick pi model" },
+  { "n", "pt", "cycle_thinking", "Cycle pi thinking level" },
+  { "n", "px", "abort", "Stop pi response" },
+} do
+  map(action[1], "<leader>" .. action[2], pi_action(action[3]), { desc = action[4] })
+end
+
+local function keybindings() require("keybinding_view").show() end
+map("n", "<leader>?", keybindings, { desc = "Search keybindings for this window" })
+vim.api.nvim_create_user_command("Keymaps", keybindings, { desc = "Search keybindings for this window" })
 
 -- Ctrl+click → go to definition (PyCharm-style)
 map("n", "<C-LeftMouse>", function()
