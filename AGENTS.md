@@ -3,6 +3,8 @@
 - 2026-08-03 01:15 — agent: pi (k3) (mason-venv/python-upgrade breakage convention after debugger repair)
 - 2026-09-22 02:40 — agent: pi (glm-5.3) (public neocurse repo — pi plugin from GitHub, self-configuration protocol)
 
+- 2026-09-27 — agent: Codex (keybinding scope: editor, Pi, file tree, and installed plugins)
+
 # neocurse — Agent Instructions
 
 From-scratch Neovim config — **no distribution** (AstroNvim was removed
@@ -71,3 +73,12 @@ small and single-concern on purpose.
   Repair in place: `uv venv <pkg>/venv --system-site-packages &&
   uv pip install --python <pkg>/venv/bin/python <pkg>` (debugpy rebuilt
   this way 2026-08-03 → 1.8.21).
+
+## Keybinding scope
+
+Keep shortcuts for file-tree navigation, Pi, normal Vim file/buffer editing, and
+installed plugins (debugger, LSP, search, completion, formatting). Do not add
+window rotation, exchange/rearrangement, detachment, or maximization shortcuts.
+`lua/keymap_policy.lua` owns the disabled native window bindings and the focused
+keybinding-picker policy; `lua/keymaps.lua` owns config mappings. Preserve normal
+Vim editing and plugin controls when pruning the picker.

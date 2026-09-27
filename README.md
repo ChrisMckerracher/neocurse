@@ -87,7 +87,8 @@ headless boot, and updates the cheatsheet. The loop and its rules live in
 install.sh          one-command installer (backup-aware)
 init.lua            lazy.nvim bootstrap + setup
 lua/options.lua     editor options (small-screen first, scales to 1440p)
-lua/keymaps.lua     every keybinding + right-click refactor menu
+lua/keymaps.lua     config keybindings + right-click refactor menu
+lua/keymap_policy.lua focused keybinding reference + disabled window operations
 lua/sidebar.lua     unified 3-state sidebar contract helpers
 lua/autocmds.lua    autosave, autoreload, LSP attach, filetype seams
 lua/lsp.lua         native 0.11 LSP — one strong server per language

@@ -5,7 +5,8 @@ Mouse works everywhere; right-click opens a refactor menu.
 
 Use `Space ?` or `:Keymaps` to open the floating keybinding picker.
 Type a key or description to filter; each row shows its mode and shortcut.
-It includes global and current-buffer mappings. `Alt-g` / `Alt-b` toggle those
+It shows supported config/plugin shortcuts and common editing/navigation mappings,
+including the current buffer’s file-tree, Pi, debugger, or LSP controls. `Alt-g` / `Alt-b` toggle those
 sources; `Esc` closes the picker. Selecting a row closes it without running
 the shortcut. This file remains the guide to workflows and built-in motions.
 
@@ -126,8 +127,20 @@ Chat viewer: read-only — scroll/copy freely, `Esc` keeps focus, `q` closes, `i
 ## Other
 | Key | Action |
 |---|---|
-| `Space R` | Run current file |
 | `Space ?` or `:Keymaps` | Search live keybindings |
 | `gcc` | Toggle comment (built-in) |
 | `j` / `k` | Move by **display line** when wrapped (by line with a count) |
 | `Esc` (editor) | Clear search highlight |
+
+## Shortcut scope
+
+Keep file-tree navigation, Pi, normal Vim file/buffer editing, and installed
+plugin controls (including debugger, LSP, search, formatting, and completion).
+Native window rotation, exchange, rearrangement, detaching to a tab, and
+maximization/equalization shortcuts are disabled. Pi divider sizing and normal
+window navigation remain. The ad-hoc `Space R` file runner has been removed;
+use the debugger's `Space r` to run/debug.
+
+The picker omits internal/no-op mappings and unrelated default aliases. Standard
+Vim commands such as `:w`, `:q`, motions, yank/paste, undo, macros, and searches
+remain available; the picker is a shortcut reference, not a catalogue of Vim.

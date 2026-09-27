@@ -2,10 +2,12 @@
 -- (LspAttach). Cheat sheet: KEYBINDINGS.md (kept in sync).
 local map = vim.keymap.set
 local sidebar = require "sidebar"
+local keymap_policy = require "keymap_policy"
+keymap_policy.setup()
 
 -- Move by display line when lines wrap (small screens), by line with a count
-map({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { expr = true })
-map({ "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { expr = true })
+map({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { expr = true, desc = "Move down (wrapped lines)" })
+map({ "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { expr = true, desc = "Move up (wrapped lines)" })
 
 map("n", "<Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear search highlight" })
 
@@ -78,21 +80,6 @@ map("n", "<leader>e", sidebar.toggle("neo-tree", "Neotree focus", "Neotree focus
 -- Close every sidebar at once (tree, structure, pi panel, debug UI)
 map("n", "<leader>q", sidebar.close_all, { desc = "Close all sidebars" })
 
--- Run current file
-map("n", "<leader>R", function()
-  local ft = vim.bo.filetype
-  local file = vim.fn.expand "%:p"
-  if ft == "python" then
-    vim.cmd("!python " .. vim.fn.shellescape(file))
-  elseif ft == "go" then
-    vim.cmd "!go run ."
-  elseif ft == "typescript" or ft == "javascript" then
-    vim.cmd("!node " .. vim.fn.shellescape(file))
-  else
-    vim.notify("No run command for filetype: " .. ft, vim.log.levels.WARN)
-  end
-end, { desc = "Run current file" })
-
 -- Format (conform; LSP fallback)
 map(
   { "n", "v" },
@@ -127,14 +114,19 @@ map("n", "<leader>v", sidebar.toggle("aerial", "AerialOpen", "AerialFocus"), { d
 local function keybindings()
   Snacks.picker.keymaps {
     title = "Keybindings · Space is leader",
+    transform = function(item)
+      if not keymap_policy.visible(item) then return false end
+      item.text = table.concat({ Snacks.util.normkey(item.key), item.mode, keymap_policy.description(item) }, " ")
+    end,
     layout = { preset = "select", preview = false, layout = { border = "single" } },
     format = function(item)
       return {
         { string.format(" %-2s ", item.mode), "SnacksPickerSpecial" },
         { string.format("%-24s", Snacks.util.normkey(item.key)), "SnacksPickerLabel" },
-        { item.item.desc or item.item.rhs or "Custom mapping", "SnacksPickerDesc" },
+        { keymap_policy.description(item), "SnacksPickerDesc" },
       }
     end,
+    -- Search user-facing descriptions and keys, not hidden Lua implementation paths.
     -- This is a reference picker: mappings span several modes, so executing
     -- a selected insert/visual mapping from normal mode would be misleading.
     confirm = function(picker) picker:close() end,
