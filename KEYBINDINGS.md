@@ -3,11 +3,11 @@
 **Leader key = Space.** From-scratch config — no distribution defaults.
 Mouse works everywhere; right-click opens a refactor menu.
 
-## The sidebar contract (same everywhere)
+## Sidebar controls
 
-Every sidebar answers ONE key with identical 3-state semantics:
+File tree and structure view use these focus-aware controls:
 
-| State you're in | `Space e` / `Space a` / `Space v` does |
+| State you're in | `Space e` / `Space v` does |
 |---|---|
 | Surface **closed** | opens it **and focuses it** |
 | Surface **open**, you're elsewhere | jumps focus to it |
@@ -26,7 +26,9 @@ Every sidebar answers ONE key with identical 3-state semantics:
 | `Esc` (in a sidebar) | Back to editor — sidebar stays open |
 | `q` (in a sidebar) | Close that surface |
 | `Space q` | **Close ALL sidebars at once** (also wipes the tree from the tabline) |
-| `Alt-e/a/v/d/q` (in the prompt) | The same sidebar keys from inside the always-insert prompt — leader chords would type text there |
+
+From the Pi prompt, press `Esc` to return to the editor, then use the normal
+Space shortcuts. `Space a` closes an open Pi panel regardless of focus.
 
 ## Buffers ("tabs")
 | Key | Action |
@@ -86,7 +88,7 @@ Every sidebar answers ONE key with identical 3-state semantics:
 ## Pi (AI agent)
 | Key | Action |
 |---|---|
-| `Space a` | Pi panel (contract: open / focus / close) |
+| `Space a` | Toggle Pi panel (open / close regardless of focus) |
 | `Space as` (visual) / `Space af` | Send selection / file |
 | `Space ak` (visual) | Inline edit |
 | `Space ad` / `Space aD` | Review / reject agent changes |

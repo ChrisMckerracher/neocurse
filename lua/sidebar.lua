@@ -2,7 +2,7 @@
 --   surface closed        → Space x opens + focuses it
 --   surface open, outside → Space x jumps focus to it
 --   surface open, inside  → Space x closes it
--- Shared by keymaps.lua (leader keys) and autocmds.lua (prompt Alt-twins).
+-- Used by keymaps.lua for leader shortcuts.
 local M = {}
 
 ---@param ft string
@@ -42,12 +42,6 @@ function M.toggle(ft, open_cmd, focus_cmd)
       vim.cmd(focus_cmd)
     end
   end
-end
-
---- Toggle the pi panel through the same 3-state contract.
-function M.toggle_pi()
-  local ok, pi = pcall(require, "pi_nvim")
-  if ok then pi.toggle() end
 end
 
 --- Close every sidebar surface at once (Space q).

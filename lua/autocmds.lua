@@ -54,38 +54,6 @@ au("FileType", {
   end,
 })
 
--- The pi prompt is insert-only, so leader chords type text there. Alt-twins
--- give the same sidebar contract from inside it (no typing conflicts).
-au("FileType", {
-  pattern = "pi_prompt",
-  callback = function(args)
-    local sb = require "sidebar"
-    local opts = { buffer = args.buf }
-    for _, mode in ipairs { "i", "n" } do
-      vim.keymap.set(
-        mode,
-        "<M-e>",
-        sb.toggle("neo-tree", "Neotree focus", "Neotree focus"),
-        vim.tbl_extend("force", opts, { desc = "File tree" })
-      )
-      vim.keymap.set(mode, "<M-a>", sb.toggle_pi, vim.tbl_extend("force", opts, { desc = "Pi panel" }))
-      vim.keymap.set(
-        mode,
-        "<M-v>",
-        sb.toggle("aerial", "AerialOpen", "AerialFocus"),
-        vim.tbl_extend("force", opts, { desc = "Structure" })
-      )
-      vim.keymap.set(
-        mode,
-        "<M-d>",
-        function() require("dapui").toggle() end,
-        vim.tbl_extend("force", opts, { desc = "Debug UI" })
-      )
-      vim.keymap.set(mode, "<M-q>", sb.close_all, vim.tbl_extend("force", opts, { desc = "Close all sidebars" }))
-    end
-  end,
-})
-
 -- LSP: buffer-local keybinds + inlay hints on attach
 au("LspAttach", {
   callback = function(args)
